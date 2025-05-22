@@ -1,87 +1,115 @@
-# simsimi-ph
+# sim-ph
 
-**A lightweight Node.js wrapper for SimSimi conversational and teaching API** using backup fallback support and dynamic API key injection.
+A Node.js client for interacting with the **SimSimi** chatbot API (for PH region only), featuring built-in fallback mechanisms to ensure reliability when accessing Sim and Teach functionalities.
 
----
+## Table of Contents
 
-## Features
+- [Introduction](#introduction)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Features](#features)
+- [API Methods](#api-methods)
+- [Dependencies](#dependencies)
+- [Configuration](#configuration)
+- [Examples](#examples)
+- [Troubleshooting](#troubleshooting)
+- [Contributors](#contributors)
+- [License](#license)
 
-- Chat with SimSimi using `/sim` endpoint
-- Teach SimSimi new responses using `/teach` endpoint
-- Automatic fallback between two servers (`ooguy` → `gleeze`)
-- Built-in error handling
-- No dependencies other than `axios`
+## Introduction
 
----
+`sim-ph` is a lightweight wrapper around the SimSimi chatbot API tailored for users in the Philippines. It provides methods to send queries to SimSimi and teach the bot new responses. If the primary API endpoint fails, the module automatically falls back to a backup endpoint to improve reliability.
 
 ## Installation
 
 ```bash
-npm install simsimi-ph
+npm install sim-ph
+
+## Usage
+
+const Sim = require('sim-ph');
+
+const sim = new Sim('your-api-key-here');
+
+// Ask something
+sim.sim('Hello!').then(response => {
+  console.log(response);
+}).catch(console.error);
+
+// Teach SimSimi a new response
+sim.teach('How are you?', 'I am fine, thank you!').then(response => {
+  console.log(response);
+}).catch(console.error);
+
+## Features
+
+Communicate with the SimSimi API using sim() method.
+
+Teach new responses using teach() method.
+
+Built-in fallback to secondary API endpoint if the primary fails.
+
+Simple and easy-to-use class interface.
 
 
----
+## API Methods
 
-Usage
+new Sim(apikey)
 
-const { sim, teach } = require('simsimi-ph');
+Creates an instance of the SimSimi client.
 
-const apikey = 'your_api_key';
+sim(query)
 
-// Chat example
-sim("hello", apikey).then(console.log).catch(console.error);
+Sends a chat message to SimSimi and returns the response.
 
-// Teach example
-teach("hi", "hello!", apikey).then(console.log).catch(console.error);
+query (string): The user's input message.
 
 
----
+teach(ask, ans)
 
-API Reference
+Teaches SimSimi a new question-answer pair.
 
-sim(query, apikey)
+ask (string): The question.
 
-query: The message you want to send to SimSimi
-
-apikey: Your API key for authentication
+ans (string): The answer SimSimi should learn.
 
 
-teach(ask, ans, apikey)
+## Dependencies
 
-ask: The input phrase you want to teach
-
-ans: The response SimSimi should reply with
-
-apikey: Your API key for authentication
+axios: Promise-based HTTP client for Node.js.
 
 
+## Configuration
 
----
+To use this module, you need a valid API key for the SimSimi PH service. Replace 'your-api-key-here' with your actual key.
 
-Example Response
+## Examples
 
-{
-  "status": true,
-  "query": "hello",
-  "response": "Hi there! How can I help you?"
+const sim = new Sim('abc123');
+
+async function interact() {
+  try {
+    const reply = await sim.sim('Kumusta ka?');
+    console.log('SimSimi:', reply);
+  } catch (err) {
+    console.error('Error:', err.message);
+  }
 }
 
+interact();
 
----
+## Troubleshooting
 
-Author
+API Key Errors: Ensure your API key is correct and active.
 
-Jerdev
-GitHub: jerdevph
+Both APIs Fail: If both primary and backup endpoints fail, check your internet connection or wait for service restoration.
 
 
----
+## Contributors
 
-License
+[ Jerdev ]
 
-MIT — You can use, modify, and redistribute with attribution.
 
----
+## License
 
-Let me know if you want this README auto-pushed to your repo or included in `package.json` as well!
-
+MIT License
