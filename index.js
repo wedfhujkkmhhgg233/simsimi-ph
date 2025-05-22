@@ -48,10 +48,5 @@ class Sim {
   }
 }
 
-// CommonJS export
-module.exports = Sim;
 
-// For ESM usage, you can import like:
-// import Sim from './yourfile.js';
-// or
-// const Sim = require('./yourfile.js');
+module.exports = Sim;
