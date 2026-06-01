@@ -5,19 +5,35 @@ class Sim {
     this.apikey = apikey;
   }
 
-  async sim(query) {
+  async sim(query, safe = true) {
     try {
-      const response = await axios.get('https://simsimi-api-pro.onrender.com/sim', {
-        params: { query, apikey: this.apikey }
-      });
+      const response = await axios.get(
+        'https://simsimi-api-pro.onrender.com/sim',
+        {
+          params: {
+            query,
+            apikey: this.apikey,
+            safe: safe ? true : false
+          }
+        }
+      );
+
       return response.data;
     } catch (error) {
       console.error('Error fetching Sim API (Primary):', error.message);
 
       try {
-        const backupResponse = await axios.get('https://simsimi.gleeze.com/sim', {
-          params: { query, apikey: this.apikey }
-        });
+        const backupResponse = await axios.get(
+          'https://simsimi.gleeze.com/sim',
+          {
+            params: {
+              query,
+              apikey: this.apikey,
+              safe: safe ? true : false
+            }
+          }
+        );
+
         return backupResponse.data;
       } catch (backupError) {
         console.error('Error fetching Sim API (Backup):', backupError.message);
@@ -28,17 +44,33 @@ class Sim {
 
   async teach(ask, ans) {
     try {
-      const response = await axios.get('https://simsimi-api-pro.onrender.com/teach', {
-        params: { ask, ans, apikey: this.apikey }
-      });
+      const response = await axios.get(
+        'https://simsimi-api-pro.onrender.com/teach',
+        {
+          params: {
+            ask,
+            ans,
+            apikey: this.apikey
+          }
+        }
+      );
+
       return response.data;
     } catch (error) {
       console.error('Error fetching Teach API (Primary):', error.message);
 
       try {
-        const backupResponse = await axios.get('https://simsimi.gleeze.com/teach', {
-          params: { ask, ans, apikey: this.apikey }
-        });
+        const backupResponse = await axios.get(
+          'https://simsimi.gleeze.com/teach',
+          {
+            params: {
+              ask,
+              ans,
+              apikey: this.apikey
+            }
+          }
+        );
+
         return backupResponse.data;
       } catch (backupError) {
         console.error('Error fetching Teach API (Backup):', backupError.message);
@@ -47,6 +79,5 @@ class Sim {
     }
   }
 }
-
 
 module.exports = Sim;
