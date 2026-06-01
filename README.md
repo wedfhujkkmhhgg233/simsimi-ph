@@ -1,4 +1,4 @@
-# sim-ph
+# sim-ph (SAFE MODE UPDATE)
 
 A Node.js client for interacting with the **SimSimi** chatbot API (for PH region only), featuring built-in fallback mechanisms to ensure reliability when accessing Sim and Teach functionalities.
 
@@ -40,21 +40,57 @@ const Sim = require('sim-ph');
 
 const sim = new Sim('your-api-key-here');
 
-// Ask something
-sim.sim('Hello!').then(response => {
-  console.log(response);
-}).catch(console.error);
+function warnSafeMode(safe) {
+  if (!safe) {
+    console.log(
+      '⚠️ Safe mode OFF: responses may be less filtered or potentially explicit.'
+    );
+  }
+}
 
-// Teach SimSimi a new response
-sim.teach('How are you?', 'I am fine, thank you!').then(response => {
-  console.log(response);
-}).catch(console.error);
+async function askSim(message, safe = true) {
+  warnSafeMode(safe);
+
+  try {
+    const res = await sim.sim(message, safe);
+    console.log(res);
+    return res;
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+async function teachSim(question, answer) {
+  try {
+    const res = await sim.teach(question, answer);
+    console.log(res);
+    return res;
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+// USAGE EXAMPLES
+
+// default safe = true
+askSim('Hello!');
+
+// explicit safe ON
+askSim('Hello!', true);
+
+// explicit safe OFF
+askSim('Hello!', false);
+
+// teach SimSimi
+teachSim('How are you?', 'I am fine, thank you!');
 ```
 
 ## Features
 
-- Communicate with the SimSimi API using `sim()` method.
-- Teach new responses using `teach()` method.
+- Communicate with the SimSimi API using sim() method.
+- Teach new responses using teach() method.
+- Supports Safe Mode (true / false)
+- Safe mode defaults to true (filtered responses)
 - Built-in fallback to secondary API endpoint if the primary fails.
 - Simple and easy-to-use class interface.
 
@@ -63,16 +99,28 @@ sim.teach('How are you?', 'I am fine, thank you!').then(response => {
 ### `new Sim(apikey)`
 Creates an instance of the SimSimi client.
 
-### `sim(query)`
+### `sim(query, safe?)`
 Sends a chat message to SimSimi and returns the response.
 
 - `query` (string): The user's input message.
+- `safe` (boolean, optional): Controls response filtering.
+`true` → safe / filtered responses (default)
+`false` → less filtered responses (may include explicit or raw content)
 
 ### `teach(ask, ans)`
 Teaches SimSimi a new question-answer pair.
 
 - `ask` (string): The question.
 - `ans` (string): The answer SimSimi should learn.
+ ```js
+sim.sim('Hello!')
+sim.sim('Hello!', true)
+sim.sim('Hello!', false)
+ ```
+
+- If safe = true → responses are filtered and generally safe.
+- If safe = false → responses may be less filtered and can sometimes be explicit or more raw.
+- If not provided → defaults to true.
 
 ## Dependencies
 
